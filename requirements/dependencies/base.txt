@@ -22,6 +22,7 @@ pytest >= 7.4.3, < 7.5
 pytest-django >= 4.7.0, < 4.8
 pytest-cov >= 4.1.0, < 4.2
 pytest-xdist >= 3.5.0, < 3.6
+pytest-mock >= 3.14.0, < 3.15
 
 Pillow >= 10.0.1, < 10.1
 rich >= 13.9.1, < 13.10
