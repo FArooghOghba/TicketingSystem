@@ -1,0 +1,12 @@
+Subject: Subject: Verification Email Request
+
+Hello {{ user.username }},
+
+We received a request to verify your email. Click the link below to reset it:
+
+{{ verification_url }}
+
+If you did not request a verification email, you can ignore this email.
+
+Regards,
+The Team
