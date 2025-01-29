@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="header-bar">
+        <a href="{% url 'auth:login' %}">&#8592; Back</a>
+    </div>
+
+    <div class="card-body">
+        <p>Your activation email sent successfully.</p>
+    </div>
+
+{% endblock content%}
