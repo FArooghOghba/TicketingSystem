@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 pytestmark = pytest.mark.django_db
 
 USER_REGISTER_URL = reverse('auth:register')
-USER_LOGIN_URL = reverse('auth:login')
+USER_ACTIVATION_SEND_URL = reverse('auth:verification-send')
 User = get_user_model()
 
 
@@ -72,7 +72,7 @@ def test_post_request_registration_view_with_valid_data_return_successful(
     )
 
     assert response.status_code == HTTPStatus.FOUND
-    assert response.url == USER_LOGIN_URL
+    assert response.url == USER_ACTIVATION_SEND_URL
 
     test_user = User.objects.get(email=first_test_user_payload['email'])
 
