@@ -1,4 +1,3 @@
-from datetime import timedelta
 import logging
 from typing import TypeVar
 
@@ -141,7 +140,7 @@ def send_registration_email(*, user: 'User') -> Email:
     verification_url = TokenService.generate_url_with_token(
         user=user,
         token_type='access',
-        expiry=timedelta(minutes=30),
+        expiry=settings.DEFAULT_REGISTRATION_EMAIL_JWT_MAX_AGE,
         view_name='auth:verify-email'
     )
 
