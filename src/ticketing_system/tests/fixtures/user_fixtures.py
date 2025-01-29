@@ -112,6 +112,23 @@ def third_test_user() -> 'User':
 
 
 @pytest.fixture
+def first_test_unverified_user() -> 'User':
+
+    """
+    Fixture for creating an unverified test user instance.
+
+    This fixture uses the `BaseUserFactory` factory
+    to create a test user instance. The created user
+    can be used in tests to simulate a user with predefined
+    attributes for testing various scenarios.
+
+    :return: an unverified user instance
+    """
+
+    return BaseUserFactory(is_verified=False)
+
+
+@pytest.fixture
 def create_test_user() -> Callable[..., 'User']:
 
     """
