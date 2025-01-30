@@ -73,6 +73,38 @@ class BaseUserFactory(DjangoModelFactory):
         }
 
     @classmethod
+    def unverified_login_payload(cls) -> Dict[str, str]:
+
+        """
+        A class method that generates a payload dictionary for login
+        an unverified user via the API.
+        :return: generate a payload dictionary with consistent values
+        for logging users.
+        """
+
+        test_user = cls.create(is_verified=False)
+        return {
+            'email': str(test_user.email),
+            'password': 'Test_passw0rd',
+        }
+
+    @classmethod
+    def nonactive_login_payload(cls) -> Dict[str, str]:
+
+        """
+        A class method that generates a payload dictionary for login
+        a nonactive user via the API.
+        :return: generate a payload dictionary with consistent values
+        for logging users.
+        """
+
+        test_user = cls.create(is_active=False)
+        return {
+            'email': str(test_user.email),
+            'password': 'Test_passw0rd',
+        }
+
+    @classmethod
     def create_superuser(cls) -> 'User':
 
         """

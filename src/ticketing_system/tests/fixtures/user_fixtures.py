@@ -44,6 +44,40 @@ def first_test_user_login_payload() -> Dict[str, str]:
 
 
 @pytest.fixture
+def first_test_unverified_user_login_payload() -> Dict[str, str]:
+
+    """
+    Fixture for login an unverified test user instance.
+
+    This fixture uses the `BaseUserFactory` factory
+    to log in an unverified test user instance. The created user
+    can be used in tests to simulate an unverified user with predefined
+    attributes for testing various scenarios.
+
+    :return: a dict test user payload
+    """
+
+    return BaseUserFactory.unverified_login_payload()
+
+
+@pytest.fixture
+def first_test_nonactive_user_login_payload() -> Dict[str, str]:
+
+    """
+    Fixture for login a nonactive test user instance.
+
+    This fixture uses the `BaseUserFactory` factory
+    to log in a nonactive test user instance. The created user
+    can be used in tests to simulate a nonactive user with predefined
+    attributes for testing various scenarios.
+
+    :return: a dict test user payload
+    """
+
+    return BaseUserFactory.nonactive_login_payload()
+
+
+@pytest.fixture
 def first_test_superuser() -> 'User':
 
     """
