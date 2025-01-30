@@ -1,10 +1,13 @@
+from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView
 
-from ticketing_system.authentication.forms import CustomUserCreationForm
+from ticketing_system.authentication.forms import (
+    CustomUserCreationForm, CustomAuthenticationForm
+)
 from ticketing_system.authentication.token_service import TokenService
 from ticketing_system.core.exceptions import ApplicationError
 from ticketing_system.emails.services import send_registration_email
@@ -62,11 +65,12 @@ class RegistrationView(CreateView):
 
 class ActivationSendView(TemplateView):
 
-     """
+    """
     View to render the activation email sent confirmation page.
 
     This view displays a message informing the user that a verification email
     has been sent to their registered email address.
+
     """
 
     template_name = 'authentication/verification-send.html'
@@ -136,13 +140,74 @@ class VerificationEmailView(TemplateView):
 
 
 class CustomLoginView(LoginView):
+
     """
-    Display the login form and handle the login action.
+    Custom login view that handles email-based authentication
+    and verification checks.
+
+    Features:
+    - Uses `email` for authentication instead of `username`.
+    - Redirects already authenticated users.
+    - Ensures only verified users can log in.
+    - Provides custom error messages for failed authentication.
     """
 
     template_name = 'authentication/login.html'
-#     # form_class = CustomAuthenticationForm
-#     # fields = ('email', 'password')
-#     # redirect_authenticated_user = True
-#     # success_msg = 'Logged in successfully'
-#     # error_msg = 'Enter a correct email and password'
+    form_class = CustomAuthenticationForm
+    redirect_authenticated_user = True
+
+    def get_success_url(self):
+
+        """
+        Returns the URL to redirect to upon successful login.
+
+        Redirects users to the `auth:custom` page.
+        """
+
+        return reverse_lazy('auth:custom')
+
+    def form_valid(self, form):
+
+        """
+        Handles successful login.
+
+        - Checks if the user is verified before allowing login.
+        - Displays a success message upon successful authentication.
+        - Calls the parent method to complete the login process.
+
+        Returns:
+            - Redirects the user to the appropriate page.
+        """
+
+        user = form.get_user()
+
+        if not user.is_verified:
+            # Prevent login for unverified users
+            messages.error(
+                self.request,
+                message="Account not verified. Please check your email for the verification link."
+            )
+            return self.form_invalid(form)
+
+        # Only log in verified users
+        messages.success(self.request, message="Logged in successfully")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+
+        """
+        Handles unsuccessful login attempts.
+
+        - Displays an error message for invalid credentials.
+        - Calls the parent method to re-render the login form.
+
+        Returns:
+            - Renders the login form with an error message.
+        """
+
+        messages.error(self.request, message="Invalid email or password")
+        return super().form_invalid(form)
+
+
+class CustomView(TemplateView):
+    template_name = 'authentication/custom.html'
