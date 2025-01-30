@@ -2,7 +2,7 @@ from django.urls import path
 
 from ticketing_system.authentication.views import (
     RegistrationView, ActivationSendView, VerificationEmailView,
-    CustomLoginView, CustomView
+    CustomLoginView, CustomLogoutView, CustomView
 )
 
 
@@ -14,6 +14,6 @@ urlpatterns = [
     path(route="verification-send/", view=ActivationSendView.as_view(), name="verification-send"),
     path(route="verify-email/<str:token>/", view=VerificationEmailView.as_view(), name="verify-email"),
     path(route="login/", view=CustomLoginView.as_view(), name="login"),
+    path(route="logout/", view=CustomLogoutView.as_view(), name="logout"),
     path(route="custom/", view=CustomView.as_view(), name="custom"),
-    # path(rout="logout/", LogoutView.as_view(next_page="home"), name="logout"),
 ]

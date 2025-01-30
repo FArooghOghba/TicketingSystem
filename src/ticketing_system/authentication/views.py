@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
@@ -207,6 +207,28 @@ class CustomLoginView(LoginView):
 
         messages.error(self.request, message="Invalid email or password")
         return super().form_invalid(form)
+
+
+class CustomLogoutView(LogoutView):
+
+    """
+    Handles user logout.
+
+    - Logs out the authenticated user.
+    - Redirects to the login page after logout.
+    - Displays a success message confirming the logout.
+    """
+
+    next_page = reverse_lazy('auth:login')
+
+    def dispatch(self, request, *args, **kwargs):
+
+        """
+        Adds a success message before logging out the user.
+        """
+
+        messages.success(request, message="You have been logged out successfully.")
+        return super().dispatch(request, *args, **kwargs)
 
 
 class CustomView(TemplateView):
