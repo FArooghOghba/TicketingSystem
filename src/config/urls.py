@@ -7,6 +7,7 @@ from django.urls import path, include
 urlpatterns = [
     path(route='admin/', view=admin.site.urls),
     path(route='auth/', view=include(('ticketing_system.authentication.urls', 'auth'))),
+    path(route='tickets/', view=include(('ticketing_system.ticket.urls', 'tickets'))),
 ]
 
 

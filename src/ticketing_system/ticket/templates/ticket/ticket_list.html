@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Ticket List{% endblock title %}
+
+{% block content %}
+<div class="header-bar">
+    <div class="header-content">
+        <h3>Hello, {{ request.user.username|title }}</h3>
+        <div class="ticket-stats">
+            <span class="stat-item">
+                Open: {{ user_profile.tickets_pending }}
+            </span>
+            <span class="stat-item">
+                In Progress: {{ user_profile.tickets_in_progress }}
+            </span>
+            <span class="stat-item">
+                Closed: {{ user_profile.tickets_closed }}
+            </span>
+        </div>
+    </div>
+
+    {% if request.user.is_authenticated %}
+    <div class="user-actions">
+        <a href="{% url 'auth:logout' %}" class="action-link">
+            <iconify-icon icon="material-symbols:logout"></iconify-icon>
+            Logout
+        </a>
+        <a href="" class="action-link">
+            <iconify-icon icon="material-symbols:password"></iconify-icon>
+            Change Password
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<div id="search-add-wrapper">
+    <form method="GET" class="search-form">
+        <input type="text" name="search" placeholder="Search tickets..."
+               value="{{ request.GET.search }}">
+        <button type="submit" class="search-button">
+            <iconify-icon icon="system-uicons:search"></iconify-icon>
+        </button>
+    </form>
+
+    {% if user_profile.role == 'customer' %}
+    <a id="add-link" href="">
+        <iconify-icon icon="carbon:intent-request-create"></iconify-icon>
+        New Ticket
+    </a>
+    {% endif %}
+</div>
+
+<div class="ticket-list">
+    {% for ticket in tickets %}
+    <div class="ticket-item {% if ticket.status == 'closed' %}closed{% endif %}">
+        <div class="ticket-main">
+            <div class="status-indicator">
+                {% if ticket.status == 'closed' %}
+                <iconify-icon icon="fluent-mdl2:completed-solid"></iconify-icon>
+                {% else %}
+                <iconify-icon icon="fluent-mdl2:status-circle-block"></iconify-icon>
+                {% endif %}
+            </div>
+            <div class="ticket-info">
+                <a href="" class="ticket-subject">
+                    {{ ticket.subject }}
+                </a>
+                <div class="ticket-meta">
+                    <span class="priority-badge {{ ticket.priority }}">
+                        {{ ticket.get_priority_display }}
+                    </span>
+                    <span class="ticket-id">#{{ ticket.ticket_id|truncatechars:8 }}</span>
+                    <span class="ticket-date">
+                        {{ ticket.created_at|date:"M d, Y" }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="ticket-actions">
+            {% if user_profile.role != 'customer' or ticket.created_by == user_profile %}
+            <a href="" class="action-link">
+                <iconify-icon icon="material-symbols:edit-outline"></iconify-icon>
+            </a>
+            {% endif %}
+
+            {% if user_profile.role == 'admin' or ticket.created_by == user_profile %}
+            <a href="" class="action-link delete">
+                <iconify-icon icon="material-symbols:delete-outline-rounded"></iconify-icon>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="empty-state">
+        <iconify-icon icon="ion:document-text-outline" width="48"></iconify-icon>
+        <h3>No tickets found</h3>
+        {% if user_profile.role == 'customer' %}
+        <p>Ready to submit a new request? <a href="">Create a ticket</a></p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}
