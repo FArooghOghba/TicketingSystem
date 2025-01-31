@@ -1,9 +1,14 @@
-from typing import Callable, Dict
+from typing import Callable, Dict, TYPE_CHECKING
 
 import pytest
 from django.contrib.auth import get_user_model
 
+from ticketing_system.users.models import UserRole
 from ticketing_system.tests.factories.user_factories import BaseUserFactory
+from ticketing_system.tests.factories.profile_factories import UserProfileFactory
+
+if TYPE_CHECKING:
+    from ticketing_system.users.models import Profile
 
 
 User = get_user_model()
@@ -180,3 +185,45 @@ def create_test_user() -> Callable[..., 'User']:
         return BaseUserFactory.create(**kwargs)
 
     return _create_test_user
+
+
+@pytest.fixture
+def first_test_user_profile() -> 'Profile':
+
+    """
+    Fixture to create a test profile for a regular user.
+
+    Returns:
+    - A Profile instance with default role as CUSTOMER.
+    """
+
+    return UserProfileFactory()
+
+
+@pytest.fixture
+def second_test_user_profile() -> 'Profile':
+
+    """
+    Fixture to create a test profile for a regular user.
+
+    Returns:
+    - A Profile instance with default role as CUSTOMER.
+    """
+
+    return UserProfileFactory()
+
+
+@pytest.fixture
+def first_test_staff_user_profile() -> 'Profile':
+
+    """
+    Fixture to create a test profile for a staff user.
+
+    Customization:
+    - Sets the role of the user to STAFF for testing staff-specific functionalities.
+
+    Returns:
+    - A Profile instance with role set to STAFF.
+    """
+
+    return UserProfileFactory(role=UserRole.STAFF)

@@ -41,3 +41,4 @@ def time_tracker() -> Generator[None, None, None]:
 
 from ticketing_system.tests.fixtures.user_fixtures import *  # noqa
 from ticketing_system.tests.fixtures.email_fixtures import *  # noqa
+from ticketing_system.tests.fixtures.ticket_fixtures import *  # noqa
