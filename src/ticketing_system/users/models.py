@@ -160,18 +160,39 @@ class BaseUser(BaseModel, AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-# class Profile(models.Model):
-#     user = models.OneToOneField(BaseUser, on_delete=models.CASCADE)
-#     posts_count = models.PositiveIntegerField(default=0)
-#     subscriber_count = models.PositiveIntegerField(default=0)
-#     subscription_count = models.PositiveIntegerField(default=0)
-#     bio = models.CharField(max_length=1000, null=True, blank=True)
-#
-#     def __str__(self):
-#         return f"{self.user} >> {self.bio}"
+class UserRole(models.TextChoices):
+
+    """
+    Enum for user roles in the ticketing system.
+    """
+
+    CUSTOMER = "customer", _("Customer")
+    STAFF = "staff", _("Staff")
+    ADMIN = "admin", _("Admin")
 
 
+class Profile(BaseModel):
 
+    """
+    Profile model extending user functionality with additional attributes.
 
+    This model represents the user's profile within the ticketing system,
+    including their role and ticket management statistics.
+    """
 
+    user = models.OneToOneField(
+        to=BaseUser, on_delete=models.CASCADE, related_name="profile"
+    )
+    role = models.CharField(
+        max_length=20,
+        choices=UserRole.choices,
+        default=UserRole.CUSTOMER,
+        verbose_name=_("Role"),
+        help_text=_("Role of the user in the ticketing system."),
+    )
+    tickets_pending = models.PositiveIntegerField(default=0)
+    tickets_in_progress = models.PositiveIntegerField(default=0)
+    tickets_closed = models.PositiveIntegerField(default=0)
 
+    def __str__(self):
+        return f"Profile of {self.user.email} with Role {self.role}."
