@@ -20,6 +20,7 @@ LOCAL_APPS = [
     'ticketing_system.users.apps.UsersConfig',
     'ticketing_system.authentication.apps.AuthenticationConfig',
     'ticketing_system.emails.apps.EmailsConfig',
+    'ticketing_system.ticket.apps.TicketConfig',
 ]
 
 THIRD_PARTY_APPS = [
