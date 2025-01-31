@@ -227,3 +227,19 @@ def first_test_staff_user_profile() -> 'Profile':
     """
 
     return UserProfileFactory(role=UserRole.STAFF)
+
+
+@pytest.fixture
+def first_test_admin_user_profile() -> 'Profile':
+
+    """
+    Fixture to create a test profile for a admin user.
+
+    Customization:
+    - Sets the role of the user to ADMIN for testing admin-specific functionalities.
+
+    Returns:
+    - A Profile instance with role set to ADMIN.
+    """
+
+    return UserProfileFactory(role=UserRole.ADMIN)

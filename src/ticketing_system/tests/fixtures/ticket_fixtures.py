@@ -61,5 +61,5 @@ def five_test_tickets() -> Generator[Any, Any, None]:
     :return: A list of five test ticket objects.
     """
 
-    test_tickets = Ticket.create_batch(5)
+    test_tickets = TicketFactory.create_batch(5)
     yield test_tickets
