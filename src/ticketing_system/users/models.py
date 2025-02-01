@@ -198,25 +198,32 @@ class Profile(BaseModel):
     )
 
     @property
-    def created_ticket_count(self) -> int:
-
+    def all_pending_ticket_count(self) -> int:
         """
-        Returns the total number of tickets created by this profile.
+        Returns the total number of 'pending' tickets.
         """
 
-        return Ticket.objects.filter(created_by=self).count()
+        return Ticket.objects.filter(status=TicketStatus.PENDING).count()
 
     @property
-    def assigned_ticket_count(self) -> int:
+    def all_in_progress_ticket_count(self) -> int:
 
         """
-        Returns the total number of tickets assigned to this profile.
+        Returns the total number of 'in progress' tickets.
         """
 
-        return Ticket.objects.filter(assigned_to=self).count()
+        return Ticket.objects.filter(status=TicketStatus.IN_PROGRESS).count()
 
     @property
-    def pending_ticket_count(self) -> int:
+    def all_closed_ticket_count(self) -> int:
+        """
+        Returns the total number of 'closed' tickets.
+        """
+
+        return Ticket.objects.filter(status=TicketStatus.CLOSED).count()
+
+    @property
+    def customer_pending_ticket_count(self) -> int:
 
         """
         Returns the number of pending tickets created by this profile.
@@ -225,7 +232,7 @@ class Profile(BaseModel):
         return Ticket.objects.filter(created_by=self, status=TicketStatus.PENDING).count()
 
     @property
-    def in_progress_ticket_count(self) -> int:
+    def customer_in_progress_ticket_count(self) -> int:
 
         """
         Returns the number of tickets in progress created by this profile.
@@ -234,7 +241,7 @@ class Profile(BaseModel):
         return Ticket.objects.filter(created_by=self, status=TicketStatus.IN_PROGRESS).count()
 
     @property
-    def closed_ticket_count(self) -> int:
+    def customer_closed_ticket_count(self) -> int:
 
         """
         Returns the number of closed tickets created by this profile.
@@ -242,6 +249,24 @@ class Profile(BaseModel):
 
         return Ticket.objects.filter(created_by=self, status=TicketStatus.CLOSED).count()
 
+    @property
+    def assigned_in_progress_ticket_count(self) -> int:
+        """
+        Returns the total number of tickets assigned to this profile that
+        still in progress.
+        """
+
+        return Ticket.objects.filter(assigned_to=self, status=TicketStatus.IN_PROGRESS).count()
+
+    @property
+    def assigned_closed_ticket_count(self) -> int:
+        """
+        Returns the total number of tickets assigned to this profile that
+        closed.
+        """
+
+        return Ticket.objects.filter(assigned_to=self, status=TicketStatus.CLOSED).count()
+
     def __str__(self):
 
-        return f"Profile of {self.user.email} with Role {self.get_role_display()}"
+        return f"Profile of {self.user.email} with Role {self.get_role_display()}."

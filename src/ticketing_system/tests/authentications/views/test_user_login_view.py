@@ -16,7 +16,7 @@ pytestmark = pytest.mark.django_db
 
 
 USER_LOGIN_URL = reverse('auth:login')
-USER_LOGIN_REDIRECT_URL = reverse("auth:custom")
+USER_LOGIN_REDIRECT_URL = reverse("tickets:list")
 User = get_user_model()
 
 
