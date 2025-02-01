@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.views import LoginView, LogoutView
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView
 
@@ -11,6 +12,7 @@ from ticketing_system.authentication.forms import (
 from ticketing_system.authentication.token_service import TokenService
 from ticketing_system.core.exceptions import ApplicationError
 from ticketing_system.emails.services import send_registration_email
+from ticketing_system.users.models import Profile
 
 
 User = get_user_model()
@@ -54,11 +56,19 @@ class RegistrationView(CreateView):
             HttpResponse: The response returned by the superclass's form_valid method.
         """
 
-        # Create user with unverified status
-        user = form.save()
+        try:
+            # Create user with unverified status
+            user = form.save()
 
-        # Send verification email
-        send_registration_email(user=user)
+            # Create associated profile
+            Profile.objects.create(user=user)
+
+            # Send verification email
+            send_registration_email(user=user)
+        except IntegrityError:
+            # Handle potential duplicate profile creation
+            form.add_error(None, "Profile already exists")
+            return self.form_invalid(form)
 
         return super().form_valid(form)
 
@@ -164,7 +174,7 @@ class CustomLoginView(LoginView):
         Redirects users to the `auth:custom` page.
         """
 
-        return reverse_lazy('auth:custom')
+        return reverse_lazy('tickets:list')
 
     def form_valid(self, form):
 
@@ -229,7 +239,3 @@ class CustomLogoutView(LogoutView):
 
         messages.success(request, message="You have been logged out successfully.")
         return super().dispatch(request, *args, **kwargs)
-
-
-class CustomView(TemplateView):
-    template_name = 'authentication/custom.html'
