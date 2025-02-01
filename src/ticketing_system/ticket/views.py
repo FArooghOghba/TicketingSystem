@@ -1,9 +1,15 @@
-from django.urls import reverse_lazy
-from django.views.generic import ListView
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DetailView, FormView, ListView
 
 from ticketing_system.ticket.models import Ticket
-from ticketing_system.ticket.services import get_user_tickets
+from ticketing_system.ticket.forms import TicketCreationForm, TicketCloseForm
+from ticketing_system.ticket.selectors import get_user_tickets, get_ticket_detail
+from ticketing_system.ticket.services import create_ticket, close_ticket
 
 
 class TicketListView(LoginRequiredMixin, ListView):
@@ -57,3 +63,25 @@ class TicketListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['user_profile'] = self.request.user.profile
         return context
+
+
+class TicketCreateView(LoginRequiredMixin, CreateView):
+
+    model = Ticket
+    form_class = TicketCreationForm
+    template_name = "ticket/ticket_create.html"
+    success_url = reverse_lazy("tickets:list")
+
+    def form_valid(self, form):
+
+        """Overrides form_valid to use the service function."""
+
+        create_ticket(
+            created_by=self.request.user.profile,
+            subject=form.cleaned_data["subject"],
+            description=form.cleaned_data["description"],
+            file=form.cleaned_data.get("file"),
+        )
+        return redirect(self.success_url)
+
+

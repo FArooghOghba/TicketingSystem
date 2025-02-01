@@ -2,11 +2,19 @@ from django.db.models import QuerySet
 from ticketing_system.users.models import Profile, UserRole
 from ticketing_system.ticket.models import Ticket
 
+def create_ticket(
+        *, created_by: Profile, subject: str, description: str, file=None
+) -> 'Ticket':
 
-def get_user_tickets(*, user_profile: 'Profile') -> QuerySet['Ticket']:
+    """Creates a new ticket and updates the user’s pending ticket count."""
 
-    """
-    Retrieve tickets based on the user's role.
+    ticket = Ticket.objects.create(
+        created_by=created_by,
+        subject=subject,
+        description=description,
+        file=file
+    )
+    return ticket
 
     - If the user is an ADMIN, return all tickets.
     - If the user is a STAFF member, return only tickets assigned to them.

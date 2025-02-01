@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Create New Ticket{% endblock title %}
+
+{% block content %}
+<!-- Header Section -->
+<div class="header-bar">
+    <div class="header-content">
+        <h1 class="page-title">Create New Ticket</h1>
+        <h3 class="page-subtitle">Fill in the form below to submit a new support request</h3>
+    </div>
+    <a href="{% url 'tickets:list' %}" class="back-link">
+        <iconify-icon icon="ion:arrow-back" style="color: white;"></iconify-icon>
+        Back to List
+    </a>
+</div>
+
+<!-- Form Section -->
+<div class="form-wrapper">
+    <form method="POST" enctype="multipart/form-data" class="ticket-form">
+        {% csrf_token %}
+
+        <!-- Subject Field -->
+        <div class="form-group">
+            <label for="id_subject">Subject</label>
+            <div class="input-with-icon">
+                <iconify-icon icon="material-symbols:subject"></iconify-icon>
+                {{ form.subject }}
+            </div>
+            {% if form.subject.errors %}
+                <div class="form-error">{{ form.subject.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Description Field -->
+        <div class="form-group">
+            <label for="id_description">Description</label>
+            <div class="input-with-icon">
+                <iconify-icon icon="material-symbols:description"></iconify-icon>
+                {{ form.description }}
+            </div>
+            {% if form.description.errors %}
+                <div class="form-error">{{ form.description.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Attachment Field -->
+        <div class="form-group">
+            <label for="id_file">Attachment (optional)</label>
+            <div class="file-upload">
+                <iconify-icon icon="material-symbols:attach-file-add"></iconify-icon>
+                {{ form.file }}
+            </div>
+            {% if form.file.errors %}
+                <div class="form-error">{{ form.file.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Assign to Staff (Admin Only) -->
+        {% if request.user.profile.role == "admin" %}
+        <div class="form-group">
+            <label for="id_assigned_to">Assign to Staff</label>
+            <div class="input-with-icon">
+                <iconify-icon icon="mdi:account-cog"></iconify-icon>
+                {{ form.assigned_to }}
+            </div>
+            {% if form.assigned_to.errors %}
+                <div class="form-error">{{ form.assigned_to.errors }}</div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary submit-button">
+                <iconify-icon icon="carbon:task-approved"></iconify-icon>
+                Submit Ticket
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock content %}
