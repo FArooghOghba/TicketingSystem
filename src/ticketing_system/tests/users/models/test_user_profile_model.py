@@ -12,7 +12,7 @@ pytestmark = pytest.mark.django_db
 User = get_user_model()
 
 
-def test_create_user_profile_return_successful(first_test_user: 'User') -> None:
+def test_create_customer_user_profile_return_successful(first_test_user: 'User') -> None:
 
     """
     Ensure a profile is created successfully when linked to a user.
@@ -28,14 +28,16 @@ def test_create_user_profile_return_successful(first_test_user: 'User') -> None:
 
     assert profile.user == first_test_user
 
-    assert profile.tickets_pending == 0
-    assert profile.tickets_in_progress == 0
-    assert profile.tickets_closed == 0
-
-    assert str(profile) == f"Profile of {profile.user.email} with Role {profile.role}."
+    assert profile.created_ticket_count == 0
+    assert profile.pending_ticket_count == 0
+    assert profile.in_progress_ticket_count == 0
+    assert profile.closed_ticket_count == 0
 
     assert profile.role == UserRole.CUSTOMER
     assert profile.get_role_display() == "Customer"
+
+    profile_repr = f"Profile of {profile.user.email} with Role {profile.get_role_display()}"
+    assert str(profile) == profile_repr
 
 
 def test_change_user_profile_role_return_successful(
@@ -74,28 +76,6 @@ def test_change_user_profile_role_with_invalid_data_return_error(
     with pytest.raises(ValidationError):
         first_test_user_profile.full_clean()
 
-def test_update_user_profile_ticket_counters_return_successful(
-        first_test_user_profile: 'Profile'
-) -> None:
-
-    """
-    Ensure the ticket counters in a profile can be updated.
-
-    This test verifies that:
-    - The pending, in-progress, and closed ticket counters can be updated.
-    - The changes are correctly saved and persisted in the database.
-    """
-
-    first_test_user_profile.tickets_pending = 5
-    first_test_user_profile.tickets_in_progress = 3
-    first_test_user_profile.tickets_closed = 2
-    first_test_user_profile.save()
-
-    refreshed_profile = Profile.objects.get(id=first_test_user_profile.id)
-    assert refreshed_profile.tickets_pending == 5
-    assert refreshed_profile.tickets_in_progress == 3
-    assert refreshed_profile.tickets_closed == 2
-
 
 def test_deletion_profile_after_user_delete_return_error(
         first_test_user: 'User'
@@ -117,6 +97,7 @@ def test_deletion_profile_after_user_delete_return_error(
 
     with pytest.raises(Profile.DoesNotExist):
         Profile.objects.get(id=profile.id)
+
 
 def test_create_user_profile_with_existed_user_return_error(
         first_test_user: 'User'

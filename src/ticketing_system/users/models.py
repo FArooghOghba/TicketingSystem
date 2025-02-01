@@ -7,6 +7,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from ticketing_system.core.models import BaseModel
+from ticketing_system.ticket.models import Ticket, TicketStatus
 
 
 class CustomUserManager(BaseUserManager['BaseUser']):
@@ -174,14 +175,19 @@ class UserRole(models.TextChoices):
 class Profile(BaseModel):
 
     """
-    Profile model extending user functionality with additional attributes.
+    Profile model for a user in the ticketing system.
 
-    This model represents the user's profile within the ticketing system,
-    including their role and ticket management statistics.
+    This model provides computed properties to dynamically count
+    the tickets created or assigned to the user without storing manual
+    counters.
     """
 
     user = models.OneToOneField(
-        to=BaseUser, on_delete=models.CASCADE, related_name="profile"
+        to=BaseUser,
+        on_delete=models.CASCADE,
+        related_name="profile",
+        verbose_name=_("User"),
+        help_text=_("The user associated with this profile."),
     )
     role = models.CharField(
         max_length=20,
@@ -190,9 +196,52 @@ class Profile(BaseModel):
         verbose_name=_("Role"),
         help_text=_("Role of the user in the ticketing system."),
     )
-    tickets_pending = models.PositiveIntegerField(default=0)
-    tickets_in_progress = models.PositiveIntegerField(default=0)
-    tickets_closed = models.PositiveIntegerField(default=0)
+
+    @property
+    def created_ticket_count(self) -> int:
+
+        """
+        Returns the total number of tickets created by this profile.
+        """
+
+        return Ticket.objects.filter(created_by=self).count()
+
+    @property
+    def assigned_ticket_count(self) -> int:
+
+        """
+        Returns the total number of tickets assigned to this profile.
+        """
+
+        return Ticket.objects.filter(assigned_to=self).count()
+
+    @property
+    def pending_ticket_count(self) -> int:
+
+        """
+        Returns the number of pending tickets created by this profile.
+        """
+
+        return Ticket.objects.filter(created_by=self, status=TicketStatus.PENDING).count()
+
+    @property
+    def in_progress_ticket_count(self) -> int:
+
+        """
+        Returns the number of tickets in progress created by this profile.
+        """
+
+        return Ticket.objects.filter(created_by=self, status=TicketStatus.IN_PROGRESS).count()
+
+    @property
+    def closed_ticket_count(self) -> int:
+
+        """
+        Returns the number of closed tickets created by this profile.
+        """
+
+        return Ticket.objects.filter(created_by=self, status=TicketStatus.CLOSED).count()
 
     def __str__(self):
-        return f"Profile of {self.user.email} with Role {self.role}."
+
+        return f"Profile of {self.user.email} with Role {self.get_role_display()}"

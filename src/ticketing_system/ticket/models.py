@@ -4,7 +4,6 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from ticketing_system.core.models import BaseModel
-from ticketing_system.users.models import UserRole
 
 
 class TicketStatus(models.TextChoices):
@@ -50,7 +49,7 @@ class Ticket(BaseModel):
         related_name="assigned_tickets",
         null=True,
         blank=True,
-        limit_choices_to={'role': UserRole.STAFF},
+        limit_choices_to={'role': 'staff'},
         verbose_name=_("Assigned To"),
         help_text=_("The support agent handling the ticket.")
     )
