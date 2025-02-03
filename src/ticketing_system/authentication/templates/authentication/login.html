@@ -1,37 +1,62 @@
 {% extends 'base.html' %}
-{% block title%}Login{% endblock title %}
+
+{% block title %}Login{% endblock title %}
 
 {% block content %}
+<div class="login-container">
+    <!-- Header Section -->
     <div class="header-bar">
-        <h1>Ticketing System LogIn</h1>
+        <h1>Ticketing System Login</h1>
     </div>
 
-    <div class="card-body">
-        <form method="POST">
+    <!-- Login Form Card -->
+    <div class="card-body login-form-wrapper">
+        <form method="POST" class="login-form">
             {% csrf_token %}
-            {{ form.errors }}
-            <p>
-                {{ form.email.label }}
+
+            <!-- Display non-field errors if any -->
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <!-- Email Field -->
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
                 {{ form.email }}
-            </p>
-
-            <p>
-                {{ form.password.label }}
-                {{ form.password }}
-            </p>
-
-
-            <input class="button" type="submit" value="Login">
-        </form>
-
-        <p>
-            <div>
-            <a href="">Forgot Password?</a>
+                {% if form.email.errors %}
+                    <div class="form-error">
+                        {{ form.email.errors }}
+                    </div>
+                {% endif %}
             </div>
 
-            Don't have an account?
-            <a href="{% url 'auth:register' %}">Register</a>
-        </p>
+            <!-- Password Field -->
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <div class="form-error">
+                        {{ form.password.errors }}
+                    </div>
+                {% endif %}
+            </div>
 
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </form>
+
+        <!-- Footer Links -->
+        <div class="login-footer">
+            <a href="" class="forgot-password">Forgot Password?</a>
+            <p>
+                Don't have an account?
+                <a href="{% url 'auth:register' %}">Register</a>
+            </p>
+        </div>
     </div>
-{% endblock content%}
+</div>
+{% endblock content %}

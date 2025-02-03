@@ -1,40 +1,85 @@
 {% extends 'base.html' %}
 
+{% block title %}Register{% endblock title %}
+
 {% block content %}
+<div class="register-container">
+    <!-- Header Section -->
     <div class="header-bar">
-        <h1>Register</h1>
+        <h1 class="page-title">Register</h1>
     </div>
 
-    <div class="card-body">
-        <form method="POST">
+    <!-- Registration Form Card -->
+    <div class="card-body register-form-wrapper">
+        <form method="POST" class="register-form">
             {% csrf_token %}
-            {{ form.errors }}
-            <label>
-                {{ form.email.label }}
-            </label>
-            {{ form.email }}
 
-            <label>
-                {{ form.username.label }}
-            </label>
-            {{ form.username }}
+            <!-- Display non-field errors if any -->
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
 
-            <label>
-                {{ form.password1.label }}
-            </label>
-            {{ form.password1 }}
+            <!-- Email Field -->
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="form-error">
+                        {{ form.email.errors }}
+                    </div>
+                {% endif %}
+            </div>
 
-            <label>
-                {{ form.password2.label }}
-            </label>
-            {{ form.password2 }}
+            <!-- Username Field -->
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="form-error">
+                        {{ form.username.errors }}
+                    </div>
+                {% endif %}
+            </div>
 
-            <input class="button" type="submit" value="Register" style="margin-top: 10px;">
+            <!-- Password Field -->
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    <div class="form-error">
+                        {{ form.password1.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <div class="form-error">
+                        {{ form.password2.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary submit-button">
+                    Register
+                </button>
+            </div>
         </form>
 
-        <p>Already have an account?
-            <a href="">Login</a>
-        </p>
-
+        <!-- Footer Links -->
+        <div class="register-footer">
+            <p>
+                Already have an account?
+                <a href="{% url 'auth:login' %}" class="login-link">Login</a>
+            </p>
+        </div>
     </div>
-{% endblock content%}
+</div>
+{% endblock content %}
