@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Ticket Detail{% endblock title %}
+
+{% block content %}
+<!-- Ticket Header Section -->
+<header class="ticket-header">
+    <!-- Back Link -->
+    <a href="{% url 'tickets:list' %}" class="back-link">
+        <iconify-icon icon="ion:arrow-back" style="color: red;"></iconify-icon>
+        Back to List
+    </a>
+    <!-- Ticket Title -->
+    <h1 class="ticket-title">{{ ticket.subject }}</h1>
+    <!-- Ticket Meta Data -->
+    <div class="ticket-meta">
+        <span class="status-badge {{ ticket.status }}">
+            {{ ticket.get_status_display }}
+        </span>
+        <span class="priority-badge {{ ticket.priority }}">
+            {{ ticket.get_priority_display }}
+        </span>
+        {% if user_profile.role != 'customer' %}
+            <span class="creator-info">
+                Created By: {{ ticket.created_by.user.email }}
+            </span>
+        {% endif %}
+        {% if ticket.status != 'pending' and ticket.assigned_to %}
+            <span class="assigned-info">
+                Assigned To: {{ ticket.assigned_to.user.email }}
+            </span>
+        {% endif %}
+    </div>
+</header>
+
+<!-- Ticket Content Section -->
+<section class="ticket-content">
+    <article class="ticket-description">
+        <p>{{ ticket.description }}</p>
+    </article>
+    {% if ticket.file %}
+    <div class="ticket-attachment">
+        <iconify-icon icon="material-symbols:attach-file"></iconify-icon>
+        <a href="{{ ticket.file.url }}" class="download-link" download>
+            Download Attachment
+        </a>
+    </div>
+    {% endif %}
+</section>
+
+<!-- Ticket Actions Section -->
+<section class="ticket-actions">
+    {% if user_profile.role|lower in "staff,admin" and ticket.status != "closed" %}
+    <a href="{% url 'tickets:close' ticket.ticket_id %}" class="btn btn-danger">
+        Close Ticket
+    </a>
+    {% endif %}
+
+    {% if user_profile.role == "admin" and ticket.status != "closed" %}
+    <div class="assignment-section">
+        <h3>Assign Ticket</h3>
+        <form method="POST" action="{% url 'tickets:assign' ticket.ticket_id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ assignment_form.assigned_to.label_tag }}
+                {{ assignment_form.assigned_to }}
+            </div>
+            <button type="submit" class="btn">
+                <iconify-icon icon="mdi:account-arrow-right"></iconify-icon>
+                Assign
+            </button>
+        </form>
+    </div>
+    {% endif %}
+
+</section>
+
+<!-- Ticket Comments / Replies Section -->
+<section class="ticket-comments">
+    <h3>Replies</h3>
+
+    <!-- Reply Form -->
+    <div class="reply-form">
+        <form method="post" class="comment-form">
+            {% csrf_token %}
+            <textarea name="reply" class="form-control" rows="3" placeholder="Enter your reply here..."></textarea>
+            <button type="submit" class="btn btn-primary">Add Reply</button>
+        </form>
+    </div>
+
+    <!-- Replies List -->
+    {% if ticket.replies.all %}
+    <div class="reply-list">
+        {% for reply in ticket.replies.all %}
+        <article class="reply-item">
+            <header class="reply-header">
+                <strong>{{ reply.sender.user.email }}</strong>
+                <span class="reply-date">{{ reply.created_at|date:"M d, Y H:i" }}</span>
+            </header>
+            <div class="reply-message">
+                <p>{{ reply.message }}</p>
+                {% if reply.attachment %}
+                <div class="reply-attachment">
+                    <iconify-icon icon="material-symbols:attach-file"></iconify-icon>
+                    <a href="{{ reply.attachment.url }}" class="download-link" download>
+                        Download Attachment
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="no-replies">No replies yet.</p>
+    {% endif %}
+</section>
+{% endblock %}
