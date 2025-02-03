@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Close Ticket: {{ ticket.subject }}</h2>
+  <p>Please provide a closing message (optional):</p>
+
+  <form method="post" action="">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-danger">Close Ticket</button>
+  </form>
+
+  <a href="{% url 'tickets:detail' ticket.ticket_id %}">Back to Ticket Detail</a>
+{% endblock %}

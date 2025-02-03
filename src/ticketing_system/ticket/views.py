@@ -203,3 +203,79 @@ class TicketAssignmentView(LoginRequiredMixin, View):
         return redirect(reverse_lazy("tickets:detail", kwargs={"ticket_id": ticket.ticket_id}))
 
 
+class TicketCloseView(LoginRequiredMixin, FormView):
+
+    """
+    View for closing a ticket, allowing staff or admin users to provide
+    an optional closing message.
+
+    This view presents a form for closing a ticket. Upon submission,
+    it calls the `close_ticket` service function to update the ticket's status.
+    Success or error messages are added accordingly, and the user is redirected
+    to the ticket list.
+
+    Attributes:
+        template_name (str): Template used to render the ticket close form.
+        form_class (Type[TicketCloseForm]): The form class for closing a ticket.
+        success_url (str): URL to redirect to after successful form submission.
+        login_url (str): URL for redirecting unauthenticated users.
+    """
+
+    template_name = "ticket/ticket_close.html"
+    form_class = TicketCloseForm
+    success_url = reverse_lazy("tickets:list")
+    login_url = reverse_lazy("auth:login")
+
+    def dispatch(self, request: Any, *args: Any, **kwargs: Any) -> Any:
+
+        """
+        Retrieve the ticket object based on the provided ticket_id.
+
+        Raises:
+            Http404: If the ticket is not found.
+
+        Returns:
+            HttpResponse: The result of the parent dispatch method.
+        """
+
+        # Fetch the ticket object based on ticket_id
+        self.ticket = get_object_or_404(Ticket, ticket_id=self.kwargs["ticket_id"])
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form: Any) -> Any:
+
+        """
+        Process the valid form submission to close the ticket.
+
+        Retrieves the closing message from the form and attempts to close the ticket using
+        the `close_ticket` service function. Appropriate success or error messages are added.
+
+        Returns:
+            HttpResponse: A redirect response to the ticket detail page.
+        """
+
+        user_profile = self.request.user.profile
+        closing_message = form.cleaned_data.get("closing_message", "")
+
+        try:
+            close_ticket(user_profile=user_profile, ticket=self.ticket, closing_message=closing_message)
+            messages.success(self.request, message="Ticket successfully closed.")
+        except PermissionDenied:
+            messages.error(self.request, message="You do not have permission to close this ticket.")
+        except ValueError as e:
+            messages.error(self.request, str(e))
+
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+
+        """
+        Add the ticket to the context for rendering the form.
+
+        Returns:
+            dict: The context data, including the ticket instance.
+        """
+
+        context = super().get_context_data(**kwargs)
+        context["ticket"] = self.ticket
+        return context
