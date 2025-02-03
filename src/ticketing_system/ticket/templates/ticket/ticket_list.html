@@ -5,17 +5,41 @@
 {% block content %}
 <div class="header-bar">
     <div class="header-content">
-        <h3>Hello, {{ request.user.username|title }}</h3>
+
+        <h3>Hello, {{ request.user.username|title }} - ({{ user_profile.role|title }})</h3>
+
         <div class="ticket-stats">
-            <span class="stat-item">
-                Open: {{ user_profile.tickets_pending }}
-            </span>
-            <span class="stat-item">
-                In Progress: {{ user_profile.tickets_in_progress }}
-            </span>
-            <span class="stat-item">
-                Closed: {{ user_profile.tickets_closed }}
-            </span>
+            {% if user_profile.role == 'staff' %}
+                <span class="stat-item">
+                    In Progress: {{ user_profile.assigned_in_progress_ticket_count }}
+                </span>
+                <span class="stat-item">
+                    Closed: {{ user_profile.assigned_closed_ticket_count }}
+                </span>
+
+            {% elif user_profile.role == 'admin' %}
+                <span class="stat-item">
+                    Open: {{ user_profile.all_pending_ticket_count }}
+                </span>
+                <span class="stat-item">
+                    In Progress: {{ user_profile.all_in_progress_ticket_count }}
+                </span>
+                <span class="stat-item">
+                    Closed: {{ user_profile.all_closed_ticket_count }}
+                </span>
+
+            {% elif user_profile.role == 'customer' %}
+                <span class="stat-item">
+                    Open: {{ user_profile.customer_pending_ticket_count }}
+                </span>
+                <span class="stat-item">
+                    In Progress: {{ user_profile.customer_in_progress_ticket_count }}
+                </span>
+                <span class="stat-item">
+                    Closed: {{ user_profile.customer_closed_ticket_count }}
+                </span>
+            {% endif %}
+
         </div>
     </div>
 
@@ -25,7 +49,7 @@
             <iconify-icon icon="material-symbols:logout"></iconify-icon>
             Logout
         </a>
-        <a href="" class="action-link">
+        <a href="#" class="action-link">
             <iconify-icon icon="material-symbols:password"></iconify-icon>
             Change Password
         </a>
@@ -43,7 +67,7 @@
     </form>
 
     {% if user_profile.role == 'customer' %}
-    <a id="add-link" href="">
+    <a id="add-link" href="{% url 'tickets:create' %}">
         <iconify-icon icon="carbon:intent-request-create"></iconify-icon>
         New Ticket
     </a>
@@ -56,13 +80,13 @@
         <div class="ticket-main">
             <div class="status-indicator">
                 {% if ticket.status == 'closed' %}
-                <iconify-icon icon="fluent-mdl2:completed-solid"></iconify-icon>
+                    <iconify-icon icon="fluent-mdl2:completed-solid"></iconify-icon>
                 {% else %}
-                <iconify-icon icon="fluent-mdl2:status-circle-block"></iconify-icon>
+                    <iconify-icon icon="fluent-mdl2:status-circle-block"></iconify-icon>
                 {% endif %}
             </div>
             <div class="ticket-info">
-                <a href="" class="ticket-subject">
+                <a href="{% url 'tickets:detail' ticket_id=ticket.ticket_id %}" class="ticket-subject">
                     {{ ticket.subject }}
                 </a>
                 <div class="ticket-meta">
@@ -73,21 +97,26 @@
                     <span class="ticket-date">
                         {{ ticket.created_at|date:"M d, Y" }}
                     </span>
+                    {% if user_profile.role != 'customer' %}
+                    <span class="ticket-creator">
+                        {{ ticket.created_by.user.email }}
+                    </span>
+                    {% endif %}
                 </div>
             </div>
         </div>
 
         <div class="ticket-actions">
             {% if user_profile.role != 'customer' or ticket.created_by == user_profile %}
-            <a href="" class="action-link">
-                <iconify-icon icon="material-symbols:edit-outline"></iconify-icon>
-            </a>
+                <a href="#" class="action-link">
+                    <iconify-icon icon="material-symbols:edit-outline"></iconify-icon>
+                </a>
             {% endif %}
 
             {% if user_profile.role == 'admin' or ticket.created_by == user_profile %}
-            <a href="" class="action-link delete">
-                <iconify-icon icon="material-symbols:delete-outline-rounded"></iconify-icon>
-            </a>
+                <a href="#" class="action-link delete">
+                    <iconify-icon icon="material-symbols:delete-outline-rounded"></iconify-icon>
+                </a>
             {% endif %}
         </div>
     </div>
@@ -96,7 +125,7 @@
         <iconify-icon icon="ion:document-text-outline" width="48"></iconify-icon>
         <h3>No tickets found</h3>
         {% if user_profile.role == 'customer' %}
-        <p>Ready to submit a new request? <a href="">Create a ticket</a></p>
+            <p>Ready to submit a new request? <a href="{% url 'tickets:create' %}">Create a ticket</a></p>
         {% endif %}
     </div>
     {% endfor %}

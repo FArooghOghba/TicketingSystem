@@ -1,41 +1,62 @@
-/* Enhanced Styles */
-.header-bar {
-    padding: 1.5rem;
-    background: linear-gradient(90deg, #2c3e50 0%, #3498db 100%);
+/* General Reset & Body */
+body {
+    font-family: 'Nunito', sans-serif;
+    margin: 0;
+    background: #f4f7f9;
+    color: #333;
 }
 
-.header-content {
-    color: white;
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+/* Header Bar */
+.header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background: linear-gradient(90deg, #2c3e50, #3498db);
+    color: #fff;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.header-content h3 {
+    margin: 0;
+    font-size: 1.5rem;
 }
 
 .ticket-stats {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     margin-top: 0.5rem;
 }
 
 .stat-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.2);
     padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.1);
     border-radius: 8px;
+    font-size: 0.9rem;
 }
 
+/* User Actions */
 .user-actions {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     align-items: center;
 }
 
 .action-link {
-    color: white;
+    color: #fff;
     text-decoration: none;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem;
+    font-weight: 500;
     transition: opacity 0.2s;
 }
 
@@ -43,19 +64,65 @@
     opacity: 0.8;
 }
 
+/* Search & Add Wrapper */
+#search-add-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.search-form {
+    display: flex;
+    gap: 0.5rem;
+    flex-grow: 1;
+}
+
+.search-form input[type="text"] {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-grow: 1;
+}
+
+.search-button {
+    background: #3498db;
+    border: none;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.search-button:hover {
+    background: #2980b9;
+}
+
+#add-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Ticket List */
 .ticket-list {
-    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .ticket-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.2rem;
-    margin-bottom: 1rem;
-    background: white;
+    background: #fff;
+    padding: 1rem;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
 }
 
@@ -70,7 +137,8 @@
 }
 
 .status-indicator iconify-icon {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
+    color: #3498db;
 }
 
 .ticket-info {
@@ -81,33 +149,53 @@
     color: #2c3e50;
     text-decoration: none;
     font-weight: 600;
+    font-size: 1.1rem;
 }
 
 .ticket-meta {
     display: flex;
-    gap: 0.8rem;
-    margin-top: 0.5rem;
-    font-size: 0.9em;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
     color: #7f8c8d;
 }
 
 .priority-badge {
-    padding: 0.2rem 0.6rem;
+    padding: 0.3rem 0.6rem;
     border-radius: 20px;
-    font-size: 0.8em;
+    font-size: 0.8rem;
     font-weight: 500;
 }
 
-.priority-badge.low { background: #e8f5e9; color: #43a047; }
-.priority-badge.medium { background: #fff3e0; color: #ef6c00; }
-.priority-badge.high { background: #ffebee; color: #c62828; }
-.priority-badge.urgent { background: #fce4ec; color: #ad1457; }
+.priority-badge.low {
+    background: #e8f5e9;
+    color: #43a047;
+}
+.priority-badge.medium {
+    background: #fff3e0;
+    color: #ef6c00;
+}
+.priority-badge.high {
+    background: #ffebee;
+    color: #c62828;
+}
+.priority-badge.urgent {
+    background: #fce4ec;
+    color: #ad1457;
+}
 
+/* Ticket Actions */
 .ticket-actions {
     display: flex;
     gap: 1rem;
 }
 
+.action-link.delete {
+    color: #e74c3c;
+}
+
+/* Empty State */
 .empty-state {
     text-align: center;
     padding: 3rem;
@@ -119,27 +207,452 @@
     color: #bdc3c7;
 }
 
-.search-form {
-    display: flex;
-    gap: 0.5rem;
-    flex-grow: 1;
+.ticket-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
 }
 
-.search-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
+.ticket-content {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
 }
 
-#add-link {
+.download-link {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.ticket-comments {
+    margin-top: 2rem;
+    background: #f9f9f9;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.reply-list {
+    margin-top: 1rem;
+}
+
+.reply-item {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0.5rem 0;
+}
+
+.reply-header {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.reply-date {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.reply-message {
+    margin-top: 0.5rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+.page-subtitle {
+    font-size: 1rem;
+    color: #ecf0f1;
+    margin: 0;
+}
+.back-link {
+    color: red;
+    text-decoration: none;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: #3498db;
-    text-shadow: none;
+}
+.ticket-form {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 0 auto;
+}
+.form-group {
+    margin-bottom: 1rem;
+}
+.input-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.form-error {
+    color: #e74c3c;
+    font-size: 0.9rem;
+}
+.form-actions {
+    text-align: right;
+}
+.btn.btn-primary.submit-button {
+    background-color: #3498db;
+    border: none;
+    padding: 0.7rem 1.2rem;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn.btn-primary.submit-button:hover {
+    background-color: #2980b9;
 }
 
-.delete {
+/* Container for the login page */
+.login-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+/* Header styling */
+.header-bar {
+    background: linear-gradient(90deg, #2c3e50, #3498db);
+    padding: 1.5rem;
+    color: white;
+    text-align: center;
+    border-radius: 8px 8px 0 0;
+}
+
+/* Form card styling */
+.login-form-wrapper {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Error message styling */
+.form-error {
     color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+}
+
+/* Form actions (submit button) */
+.form-actions {
+    text-align: right;
+    margin-top: 1.5rem;
+}
+
+.btn.btn-primary {
+    background-color: #3498db;
+    border: none;
+    color: #fff;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+/* Footer links styling */
+.login-footer {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.login-footer a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Registration Container */
+.register-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+/* Header for Registration */
+.register-container .header-bar {
+    background: linear-gradient(90deg, #2c3e50, #3498db);
+    padding: 1.5rem;
+    color: #fff;
+    text-align: center;
+    border-radius: 8px 8px 0 0;
+    margin-bottom: 1rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    margin: 0;
+}
+
+/* Registration Form Card */
+.register-form-wrapper {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Group Styles */
+.register-form .form-group {
+    margin-bottom: 1rem;
+}
+
+.register-form .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.register-form .form-group input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Error Message Styles */
+.form-error {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+}
+
+/* Form Actions */
+.register-form .form-actions {
+    text-align: right;
+    margin-top: 1.5rem;
+}
+
+.btn.btn-primary.submit-button {
+    background-color: #3498db;
+    border: none;
+    color: #fff;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn.btn-primary.submit-button:hover {
+    background-color: #2980b9;
+}
+
+/* Footer Links */
+.register-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.register-footer a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register-footer a:hover {
+    text-decoration: underline;
+}
+
+.ticket-header {
+    padding: 1.5rem;
+    background: linear-gradient(90deg, #2c3e50, #3498db);
+    color: white;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+.back-link {
+    color: white;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.ticket-title {
+    font-size: 2rem;
+    margin: 0.5rem 0;
+}
+.ticket-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+.ticket-content {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+.download-link {
+    color: #3498db;
+    text-decoration: none;
+}
+.ticket-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.ticket-comments {
+    background: #f9f9f9;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+.comment-form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+.reply-list {
+    margin-top: 1rem;
+}
+.reply-item {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0.75rem 0;
+}
+.reply-header {
+    font-size: 0.9rem;
+    color: #555;
+}
+.reply-date {
+    font-size: 0.8rem;
+    color: #999;
+    margin-left: 0.5rem;
+}
+.reply-message {
+    margin-top: 0.5rem;
+}
+.no-replies {
+    text-align: center;
+    color: #7f8c8d;
+    font-style: italic;
+    margin-top: 1rem;
+}
+
+.ticket-header {
+    padding: 1.5rem;
+    background: linear-gradient(90deg, #2c3e50, #3498db);
+    color: white;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.back-link {
+    color: white;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ticket-title {
+    font-size: 2rem;
+    margin: 0.5rem 0;
+}
+
+.ticket-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.ticket-content {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.download-link {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.ticket-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.assignment-form {
+    margin-top: 1rem;
+}
+
+.ticket-comments {
+    background: #f9f9f9;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+}
+
+.reply-form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.reply-list {
+    margin-top: 1rem;
+}
+
+.reply-item {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0.75rem 0;
+}
+
+.reply-header {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.reply-date {
+    font-size: 0.8rem;
+    color: #999;
+    margin-left: 0.5rem;
+}
+
+.reply-message {
+    margin-top: 0.5rem;
+}
+
+.no-replies {
+    text-align: center;
+    color: #7f8c8d;
+    font-style: italic;
+    margin-top: 1rem;
 }
