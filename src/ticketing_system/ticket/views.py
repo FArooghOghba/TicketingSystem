@@ -151,3 +151,55 @@ class TicketDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
+class TicketAssignmentView(LoginRequiredMixin, View):
+
+    """
+    Handles ticket assignment form submission by admin users.
+
+    This view processes a POST request to assign a ticket to a staff user.
+    It validates the submitted form and, if valid, calls the service function
+    to perform the assignment. If the logged-in user is not an admin, it
+    immediately returns an error message.
+
+    Attributes:
+        None
+    """
+
+    def post(self, request: Any, ticket_id: str, *args: Any, **kwargs: Any) -> Any:
+
+        """
+        Process the assignment form submission.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            ticket_id (str): The unique identifier of the ticket to assign.
+
+        Returns:
+            HttpResponse: A redirection to the ticket detail page with appropriate messages.
+
+        Raises:
+            PermissionDenied: If the user does not have admin privileges.
+        """
+
+        ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
+        form = TicketAssignmentForm(request.POST)
+
+        if request.user.profile.role != 'admin':
+            messages.error(request, message="You don't have permission to assign tickets.")
+            return redirect(reverse_lazy("tickets:detail", kwargs={"ticket_id": ticket.ticket_id}))
+
+        if form.is_valid():
+            try:
+                assign_ticket(
+                    ticket=ticket,
+                    staff_profile=form.cleaned_data["assigned_to"]
+                )
+                messages.success(request, message="Ticket assigned successfully.")
+            except ValidationError as e:
+                messages.error(request, str(e))
+        else:
+            messages.error(request, message="Invalid assignment form submission.")
+
+        return redirect(reverse_lazy("tickets:detail", kwargs={"ticket_id": ticket.ticket_id}))
+
+

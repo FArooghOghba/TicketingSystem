@@ -19,3 +19,22 @@ def create_ticket(
     return ticket
 
 
+def assign_ticket(*, ticket: 'Ticket', staff_profile: 'Profile') -> 'Ticket':
+
+    """
+    Assigns the given ticket to a staff user.
+
+    Args:
+        ticket (Ticket): The ticket to assign.
+        staff_profile (Profile): The profile of the staff user to assign the ticket to.
+
+    Returns:
+        Ticket: The updated ticket.
+    """
+
+    ticket.assigned_to = staff_profile
+    ticket.status = TicketStatus.IN_PROGRESS
+    ticket.save()
+    return ticket
+
+
