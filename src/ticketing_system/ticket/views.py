@@ -13,6 +13,7 @@ from ticketing_system.ticket.models import Ticket
 from ticketing_system.ticket.forms import TicketCreationForm, TicketCloseForm, TicketAssignmentForm
 from ticketing_system.ticket.selectors import get_user_tickets, get_ticket_detail
 from ticketing_system.ticket.services import create_ticket, close_ticket, assign_ticket
+from ticketing_system.users.selectors import get_user_profile
 
 
 class TicketListView(LoginRequiredMixin, ListView):
@@ -22,8 +23,8 @@ class TicketListView(LoginRequiredMixin, ListView):
 
     - Requires authentication (`LoginRequiredMixin`).
     - Uses pagination to display 10 tickets per page.
-    - Calls `get_user_tickets()` to retrieve the correct ticket queryset.
-    - Adds the `user_profile` to the context for template access.
+    - Retrieves a filtered ticket queryset via `get_user_tickets()`.
+    - Adds the annotated user profile (with ticket counts) to the template context.
 
     Attributes:
         model (Ticket): The model associated with this view.
@@ -45,7 +46,8 @@ class TicketListView(LoginRequiredMixin, ListView):
         Get the ticket queryset based on the user's profile.
 
         Returns:
-            QuerySet[Ticket]: A filtered queryset containing tickets relevant to the user.
+            QuerySet[Ticket]: A filtered queryset containing tickets
+            relevant to the user.
         """
 
         user_profile = self.request.user.profile
@@ -56,15 +58,19 @@ class TicketListView(LoginRequiredMixin, ListView):
 
         """
         Add additional context data to the template.
+        Extend the context with the annotated user profile.
 
         - Adds `user_profile` to the context for role-based UI rendering.
 
         Returns:
-            dict: The context data for rendering the template.
+            dict: Context data containing the user profile with aggregated
+            ticket counts.
         """
 
         context = super().get_context_data(**kwargs)
-        context['user_profile'] = self.request.user.profile
+
+        user = self.request.user
+        context['user_profile'] = get_user_profile(user=user)
         return context
 
 

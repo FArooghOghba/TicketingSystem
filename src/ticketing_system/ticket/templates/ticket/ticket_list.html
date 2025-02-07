@@ -6,39 +6,21 @@
 <div class="header-bar">
     <div class="header-content">
 
-        <h3>Hello, {{ request.user.username|title }} - ({{ user_profile.role|title }})</h3>
+        <h3>Hello, {{ user_profile.user.username|title }} - ({{ user_profile.role|title }})</h3>
 
         <div class="ticket-stats">
-            {% if user_profile.role == 'staff' %}
-                <span class="stat-item">
-                    In Progress: {{ user_profile.assigned_in_progress_ticket_count }}
-                </span>
-                <span class="stat-item">
-                    Closed: {{ user_profile.assigned_closed_ticket_count }}
-                </span>
 
-            {% elif user_profile.role == 'admin' %}
+            {% if user_profile.role != 'staff' %}
                 <span class="stat-item">
-                    Open: {{ user_profile.all_pending_ticket_count }}
-                </span>
-                <span class="stat-item">
-                    In Progress: {{ user_profile.all_in_progress_ticket_count }}
-                </span>
-                <span class="stat-item">
-                    Closed: {{ user_profile.all_closed_ticket_count }}
-                </span>
-
-            {% elif user_profile.role == 'customer' %}
-                <span class="stat-item">
-                    Open: {{ user_profile.customer_pending_ticket_count }}
-                </span>
-                <span class="stat-item">
-                    In Progress: {{ user_profile.customer_in_progress_ticket_count }}
-                </span>
-                <span class="stat-item">
-                    Closed: {{ user_profile.customer_closed_ticket_count }}
+                    Open: {{ user_profile.pending_tickets_count }}
                 </span>
             {% endif %}
+                <span class="stat-item">
+                    In Progress: {{ user_profile.in_progress_tickets_count }}
+                </span>
+                <span class="stat-item">
+                    Closed: {{ user_profile.closed_tickets_count }}
+                </span>
 
         </div>
     </div>

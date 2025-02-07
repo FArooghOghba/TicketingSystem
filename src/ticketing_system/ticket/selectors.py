@@ -1,8 +1,10 @@
-from django.db.models import QuerySet
+from typing import Dict
+
+from django.db.models import Count, Q, QuerySet
 from django.shortcuts import get_object_or_404
 
 from ticketing_system.users.models import Profile, UserRole
-from ticketing_system.ticket.models import Ticket
+from ticketing_system.ticket.models import Ticket, TicketStatus
 
 
 def get_user_tickets(*, user_profile: 'Profile') -> QuerySet['Ticket']:
@@ -75,3 +77,28 @@ def get_ticket_detail(*, user_profile: 'Profile', ticket_id: str) -> 'Ticket':
         return ticket  # Customers can only see their own tickets
 
     raise PermissionError("You do not have permission to view this ticket.")
+
+
+def get_tickets_count() -> Dict[str, int]:
+
+    """
+    Returns a dictionary with overall ticket counts based on status.
+
+    Returns:
+        Dict[str, int]: Aggregated counts for:
+            - pending_tickets_count: Total tickets with status PENDING.
+            - in_progress_tickets_count: Total tickets with status IN_PROGRESS.
+            - closed_tickets_count: Total tickets with status CLOSED.
+    """
+
+    return Ticket.objects.aggregate(
+        pending_tickets_count=Count(
+            'id', filter=Q(status=TicketStatus.PENDING)
+        ),
+        in_progress_tickets_count=Count(
+            'id', filter=Q(status=TicketStatus.IN_PROGRESS)
+        ),
+        closed_tickets_count=Count(
+            'id', filter=Q(status=TicketStatus.CLOSED)
+        ),
+    )
