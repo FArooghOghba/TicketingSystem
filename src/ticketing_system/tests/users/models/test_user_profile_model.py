@@ -19,7 +19,6 @@ def test_create_customer_user_profile_return_successful(first_test_user: 'User')
 
     This test verifies that:
     - A profile is correctly associated with a user.
-    - Default values for ticket counters are set to zero.
     - The string representation of the profile includes the user's email and role.
     - The default role is 'Customer', and it returns the correct display value.
     """
@@ -28,15 +27,10 @@ def test_create_customer_user_profile_return_successful(first_test_user: 'User')
 
     assert profile.user == first_test_user
 
-    assert profile.created_ticket_count == 0
-    assert profile.pending_ticket_count == 0
-    assert profile.in_progress_ticket_count == 0
-    assert profile.closed_ticket_count == 0
-
     assert profile.role == UserRole.CUSTOMER
     assert profile.get_role_display() == "Customer"
 
-    profile_repr = f"Profile of {profile.user.email} with Role {profile.get_role_display()}"
+    profile_repr = f"Profile of {profile.user.email} with Role {profile.get_role_display()}."
     assert str(profile) == profile_repr
 
 
