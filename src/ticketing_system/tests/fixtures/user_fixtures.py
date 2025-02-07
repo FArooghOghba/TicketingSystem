@@ -4,8 +4,8 @@ import pytest
 from django.contrib.auth import get_user_model
 
 from ticketing_system.users.models import UserRole
-from ticketing_system.tests.factories.user_factories import BaseUserFactory
-from ticketing_system.tests.factories.profile_factories import UserProfileFactory
+from ticketing_system.tests.factories.user_factories import BaseUserFactory, UserProfileFactory
+
 
 if TYPE_CHECKING:
     from ticketing_system.users.models import Profile

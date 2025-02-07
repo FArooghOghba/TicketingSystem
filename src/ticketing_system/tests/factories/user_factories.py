@@ -1,8 +1,10 @@
 from typing import Dict
 
 from django.contrib.auth import get_user_model
-from factory import PostGenerationMethodCall, Sequence
+from factory import PostGenerationMethodCall, Sequence, SubFactory
 from factory.django import DjangoModelFactory
+
+from ticketing_system.users.models import Profile
 
 
 User = get_user_model()
@@ -67,6 +69,8 @@ class BaseUserFactory(DjangoModelFactory):
         """
 
         test_user = cls.create()
+        UserProfileFactory.create(user=test_user)
+
         return {
             'email': str(test_user.email),
             'password': 'Test_passw0rd',
@@ -122,3 +126,19 @@ class BaseUserFactory(DjangoModelFactory):
         )
 
         return superuser
+
+
+class UserProfileFactory(DjangoModelFactory):
+
+    """
+    Factory for creating test Profile instances.
+
+    Uses:
+    - Automatically generates a linked User instance via BaseUserFactory.
+    - Sets default values for Profile fields.
+    """
+
+    class Meta:
+        model = Profile
+
+    user = SubFactory(BaseUserFactory)

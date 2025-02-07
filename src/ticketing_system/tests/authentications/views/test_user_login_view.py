@@ -3,6 +3,7 @@ from typing import Dict, TYPE_CHECKING
 
 import pytest
 from django.contrib.auth import get_user_model
+from django.contrib.messages import get_messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
@@ -76,7 +77,9 @@ def test_post_request_user_login_return_success(
     assert response.status_code == HTTPStatus.OK
     assert response.wsgi_request.user.is_authenticated
     assert response.redirect_chain
-    assert "Logged in successfully" in response.content.decode()
+
+    success_message = "Logged in successfully"
+    assert success_message in str([m.message for m in get_messages(response.wsgi_request)])
 
 
 def test_post_request_user_login_unverified_user_redirects_to_verification(

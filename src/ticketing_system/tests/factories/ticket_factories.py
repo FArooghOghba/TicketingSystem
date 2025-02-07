@@ -2,7 +2,7 @@ import factory
 from factory.django import DjangoModelFactory
 
 from ticketing_system.ticket.models import Ticket
-from ticketing_system.tests.factories.profile_factories import UserProfileFactory
+from ticketing_system.tests.factories.user_factories import UserProfileFactory
 
 
 class TicketFactory(DjangoModelFactory):
